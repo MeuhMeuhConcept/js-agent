@@ -1,0 +1,25 @@
+{
+  "name": "js-agent",
+  "version": "1.0.0",
+  "main": "build/index.js",
+  "typings": "build/index",
+  "repository": "git@github.com:MeuhMeuhConcept/js-agent.git",
+  "author": "jngermon <jn.germon@gmail.com>",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "dev": "concurrently -k -n \"Typescript,TSLint\" -p \"[{name}]\" -c \"blue,green\" \"tsc --watch\" \"watch 'tslint --project ./tsconfig.json' ./src\"",
+    "build": "tsc",
+    "test": "jest --verbose"
+  },
+  "devDependencies": {
+    "@types/jest": "^25.1.4",
+    "concurrently": "^5.1.0",
+    "jest": "^25.1.0",
+    "ts-jest": "^25.2.1",
+    "tslint": "^6.1.0",
+    "tslint-config-standard": "^9.0.0",
+    "typescript": "^3.8.3",
+    "watch": "^1.0.2"
+  }
+}
