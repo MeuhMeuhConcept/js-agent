@@ -7,6 +7,7 @@
   "author": "jngermon <jn.germon@gmail.com>",
   "license": "MIT",
   "private": false,
+  "publishConfig": { "registry": "https://npm.pkg.github.com/" },
   "scripts": {
     "dev": "concurrently -k -n \"Typescript,TSLint\" -p \"[{name}]\" -c \"blue,green\" \"tsc --watch\" \"watch 'tslint --project ./tsconfig.json' ./src\"",
     "build": "tsc",
