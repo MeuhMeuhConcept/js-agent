@@ -8,13 +8,16 @@ export type ProgressListener = (progress: number) => void
 
 export type StatusListener = (status: Status) => void
 
-export interface Request {
+export interface RequestInformations {
     readonly status: Status
     readonly errors: string[]
+    readonly progress: number
+}
+
+export interface Request extends RequestInformations {
     readonly responseData: any | null
     readonly responseStatus: any | null
     readonly responseTextStatus: any | null
-    readonly progress: number
     abort (): this
     send (data?: any): Promise<Response>
     onProgress (listener: ProgressListener): void
