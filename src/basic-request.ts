@@ -202,6 +202,10 @@ export class BasicRequest implements Request {
     }
 
     protected changeProgression (progress: number) {
+        if (progress === this._progress) {
+            return
+        }
+
         this._progress = progress
 
         for (let listener of this._progressListeners) {
@@ -210,6 +214,10 @@ export class BasicRequest implements Request {
     }
 
     protected changeStatus (status: Status) {
+        if (status === this._status) {
+            return
+        }
+
         this._status = status
 
         for (let listener of this._statusListeners) {

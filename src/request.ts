@@ -6,7 +6,7 @@ export type Method = 'GET' | 'POST' | 'PUT' | 'DELETE'
 
 export type ProgressListener = (progress: number) => void
 
-export type StatusListener = (status: string) => void
+export type StatusListener = (status: Status) => void
 
 export interface Request {
     readonly status: Status
