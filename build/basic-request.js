@@ -133,7 +133,6 @@ class BasicRequest {
                     this._xhr.setRequestHeader(key, this._settings.headers[key]);
                 }
             }
-            this._xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
             this._xhr.send(this.transformRequestData(this._settings.data));
         });
     }
@@ -151,12 +150,18 @@ class BasicRequest {
         };
     }
     changeProgression(progress) {
+        if (progress === this._progress) {
+            return;
+        }
         this._progress = progress;
         for (let listener of this._progressListeners) {
             listener(progress);
         }
     }
     changeStatus(status) {
+        if (status === this._status) {
+            return;
+        }
         this._status = status;
         for (let listener of this._statusListeners) {
             listener(status);

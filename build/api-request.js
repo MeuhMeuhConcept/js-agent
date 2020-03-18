@@ -5,6 +5,7 @@ class ApiRequest extends basic_request_1.BasicRequest {
     constructor(url, method = 'GET') {
         super(url, method);
         this.addHeader('Content-Type', 'application/json');
+        this.addHeader('X-Requested-With', 'XMLHttpRequest');
     }
     transformRequestData(data) {
         return JSON.stringify(data);

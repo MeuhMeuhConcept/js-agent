@@ -179,8 +179,6 @@ export class BasicRequest implements Request {
                 }
             }
 
-            this._xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest')
-
             this._xhr.send(this.transformRequestData(this._settings.data))
         })
     }
