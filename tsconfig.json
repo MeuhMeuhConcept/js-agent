@@ -4,8 +4,9 @@
   ],
   "compilerOptions": {
     "outDir": "build",
-    "target": "es6",
-    "module": "commonjs",
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
     "esModuleInterop": true,
     "strict": true,
     "experimentalDecorators": true

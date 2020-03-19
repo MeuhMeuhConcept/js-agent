@@ -1,6 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class BasicRequest {
+export class BasicRequest {
     constructor(url, method = 'GET') {
         this._xhr = null;
         this._responseStatus = null;
@@ -168,4 +166,3 @@ class BasicRequest {
         }
     }
 }
-exports.BasicRequest = BasicRequest;
