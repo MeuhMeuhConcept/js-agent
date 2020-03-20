@@ -1,6 +1,6 @@
 {
   "name": "rich-agent",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "main": "build/index.js",
   "typings": "src/index",
   "repository": "git@github.com:MeuhMeuhConcept/js-agent.git",
@@ -10,6 +10,7 @@
   "scripts": {
     "dev": "concurrently -k -n \"Typescript,TSLint\" -p \"[{name}]\" -c \"blue,green\" \"tsc --watch\" \"watch 'tslint --project ./tsconfig.json' ./src\"",
     "build": "tsc",
+    "tslint": "tslint --project ./tsconfig.json",
     "test": "jest --verbose"
   },
   "devDependencies": {

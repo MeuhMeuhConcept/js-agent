@@ -12,6 +12,8 @@ export class BasicRequest implements Request {
     private _xhr: XMLHttpRequest | null = null
     protected _settings: Settings
 
+    protected _urlParams: {[key: string]: string} = {}
+
     protected _responseStatus: number | null = null
     protected _responseTextStatus: any = ''
     protected _responseData: any | null = null
@@ -68,20 +70,34 @@ export class BasicRequest implements Request {
         return this._progress
     }
 
-    addHeader (key: string, value: string): void {
+    addHeader (key: string, value: string): this {
         this._settings.headers[key] = value
+
+        return this
     }
 
-    addAuthorization (token: string, prefix: string = 'Bearer'): void {
+    addAuthorization (token: string, prefix: string = 'Bearer'): this {
         this._settings.headers['Authorization'] = prefix + ' ' + token
+
+        return this
     }
 
-    onProgress (listener: ProgressListener) {
+    setUrlParam (key: string, value: string): this {
+        this._urlParams[key] = value
+
+        return this
+    }
+
+    onProgress (listener: ProgressListener): this {
         this._progressListeners.push(listener)
+
+        return this
     }
 
-    onStatusChange (listener: StatusListener) {
+    onStatusChange (listener: StatusListener): this {
         this._statusListeners.push(listener)
+
+        return this
     }
 
     abort () {
@@ -171,7 +187,13 @@ export class BasicRequest implements Request {
                 // Do nothing
             }
 
-            this._xhr.open(this._settings.method || 'GET', this._settings.url, true)
+            let url = this._settings.url
+
+            for (const key in this._urlParams) {
+                url = url.replace('{' + key + '}', this._urlParams[key])
+            }
+
+            this._xhr.open(this._settings.method || 'GET', url, true)
 
             if (this._settings.headers) {
                 for (let key in this._settings.headers) {
@@ -183,11 +205,11 @@ export class BasicRequest implements Request {
         })
     }
 
-    transformRequestData (data?: any): any {
+    protected transformRequestData (data?: any): any {
         return data !== undefined ? data : null
     }
 
-    transformResponseData (data: string): boolean {
+    protected transformResponseData (data: string): boolean {
         return true
     }
 

@@ -1,6 +1,7 @@
 export class BasicRequest {
     constructor(url, method = 'GET') {
         this._xhr = null;
+        this._urlParams = {};
         this._responseStatus = null;
         this._responseTextStatus = '';
         this._responseData = null;
@@ -45,15 +46,23 @@ export class BasicRequest {
     }
     addHeader(key, value) {
         this._settings.headers[key] = value;
+        return this;
     }
     addAuthorization(token, prefix = 'Bearer') {
         this._settings.headers['Authorization'] = prefix + ' ' + token;
+        return this;
+    }
+    setUrlParam(key, value) {
+        this._urlParams[key] = value;
+        return this;
     }
     onProgress(listener) {
         this._progressListeners.push(listener);
+        return this;
     }
     onStatusChange(listener) {
         this._statusListeners.push(listener);
+        return this;
     }
     abort() {
         if (this._xhr) {
@@ -125,7 +134,11 @@ export class BasicRequest {
             catch (error) {
                 // Do nothing
             }
-            this._xhr.open(this._settings.method || 'GET', this._settings.url, true);
+            let url = this._settings.url;
+            for (const key in this._urlParams) {
+                url = url.replace('{' + key + '}', this._urlParams[key]);
+            }
+            this._xhr.open(this._settings.method || 'GET', url, true);
             if (this._settings.headers) {
                 for (let key in this._settings.headers) {
                     this._xhr.setRequestHeader(key, this._settings.headers[key]);
