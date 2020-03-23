@@ -15,8 +15,8 @@ export interface RequestInformations {
 }
 
 export interface AuthorizationService {
-    readonly token: string
-    readonly prefix: string
+    readonly authorizationToken: string
+    readonly authorizationPrefix: string
     onAuthorizationError: (responseStatus: any | null, responseTextStatus: any | null) => void
 }
 

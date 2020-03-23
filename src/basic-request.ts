@@ -207,7 +207,7 @@ export class BasicRequest implements Request {
             this._xhr.open(this._settings.method || 'GET', url, true)
 
             if (this._authorizationService) {
-                this.addAuthorization(this._authorizationService.token, this._authorizationService.prefix)
+                this.addAuthorization(this._authorizationService.authorizationToken, this._authorizationService.authorizationPrefix)
             }
 
             if (this._settings.headers) {
