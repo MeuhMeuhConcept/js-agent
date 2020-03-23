@@ -105,6 +105,9 @@ export class BasicRequest {
                     resolve(this.buildResponse());
                 }
                 else {
+                    if (this._responseStatus === 401 && this._authorizationService) {
+                        this._authorizationService.onAuthorizationError(this._responseStatus, this._responseTextStatus);
+                    }
                     reject(this.buildResponse());
                 }
             };

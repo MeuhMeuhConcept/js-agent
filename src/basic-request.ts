@@ -150,6 +150,10 @@ export class BasicRequest implements Request {
                 if (this._status === 'done') {
                     resolve(this.buildResponse())
                 } else {
+                    if (this._responseStatus === 401 && this._authorizationService) {
+                        this._authorizationService.onAuthorizationError(this._responseStatus, this._responseTextStatus)
+                    }
+
                     reject(this.buildResponse())
                 }
             }
