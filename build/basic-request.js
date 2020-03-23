@@ -9,6 +9,7 @@ export class BasicRequest {
         this._progress = 0;
         this._progressListeners = [];
         this._statusListeners = [];
+        this._authorizationService = null;
         this._settings = {
             url: url,
             method: method,
@@ -50,6 +51,10 @@ export class BasicRequest {
     }
     addAuthorization(token, prefix = 'Bearer') {
         this._settings.headers['Authorization'] = prefix + ' ' + token;
+        return this;
+    }
+    addAuthorizationService(service) {
+        this._authorizationService = service;
         return this;
     }
     setUrlParam(key, value) {
@@ -113,6 +118,9 @@ export class BasicRequest {
                 this.changeProgression(100);
                 this.changeStatus('error');
                 this._xhr = null;
+                if (this._responseStatus === 401 && this._authorizationService) {
+                    this._authorizationService.onAuthorizationError(this._responseStatus, this._responseTextStatus);
+                }
                 reject(this.buildResponse());
             };
             this._xhr.onabort = () => {
@@ -139,6 +147,9 @@ export class BasicRequest {
                 url = url.replace('{' + key + '}', this._urlParams[key]);
             }
             this._xhr.open(this._settings.method || 'GET', url, true);
+            if (this._authorizationService) {
+                this.addAuthorization(this._authorizationService.token, this._authorizationService.prefix);
+            }
             if (this._settings.headers) {
                 for (let key in this._settings.headers) {
                     this._xhr.setRequestHeader(key, this._settings.headers[key]);

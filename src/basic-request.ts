@@ -1,4 +1,4 @@
-import { Request, Method, Status, ProgressListener, StatusListener } from './request'
+import { Request, Method, Status, ProgressListener, StatusListener, AuthorizationService } from './request'
 import { Response } from './response'
 
 export interface Settings {
@@ -23,6 +23,8 @@ export class BasicRequest implements Request {
 
     protected _progressListeners: ProgressListener[] = []
     protected _statusListeners: StatusListener[] = []
+
+    protected _authorizationService: AuthorizationService | null = null
 
     constructor (url: string, method: Method = 'GET') {
 
@@ -79,6 +81,11 @@ export class BasicRequest implements Request {
     addAuthorization (token: string, prefix: string = 'Bearer'): this {
         this._settings.headers['Authorization'] = prefix + ' ' + token
 
+        return this
+    }
+
+    addAuthorizationService (service: AuthorizationService | null): this {
+        this._authorizationService = service
         return this
     }
 
@@ -161,6 +168,10 @@ export class BasicRequest implements Request {
 
                 this._xhr = null
 
+                if (this._responseStatus === 401 && this._authorizationService) {
+                    this._authorizationService.onAuthorizationError(this._responseStatus, this._responseTextStatus)
+                }
+
                 reject(this.buildResponse())
             }
 
@@ -194,6 +205,10 @@ export class BasicRequest implements Request {
             }
 
             this._xhr.open(this._settings.method || 'GET', url, true)
+
+            if (this._authorizationService) {
+                this.addAuthorization(this._authorizationService.token, this._authorizationService.prefix)
+            }
 
             if (this._settings.headers) {
                 for (let key in this._settings.headers) {

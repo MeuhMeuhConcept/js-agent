@@ -14,14 +14,21 @@ export interface RequestInformations {
     readonly progress: number
 }
 
+export interface AuthorizationService {
+    readonly token: string
+    readonly prefix: string
+    onAuthorizationError: (responseStatus: any | null, responseTextStatus: any | null) => void
+}
+
 export interface Request extends RequestInformations {
     readonly responseData: any | null
     readonly responseStatus: any | null
     readonly responseTextStatus: any | null
     abort (): this
     send (data?: any): Promise<Response>
-    onProgress (listener: ProgressListener): void
-    onStatusChange (listener: StatusListener): void
-    addHeader (key: string, value: string): void
-    addAuthorization (token: string, prefix: string): void
+    onProgress (listener: ProgressListener): this
+    onStatusChange (listener: StatusListener): this
+    addHeader (key: string, value: string): this
+    addAuthorization (token: string, prefix: string): this
+    addAuthorizationService (service: AuthorizationService | null): this
 }
