@@ -20,6 +20,7 @@ export class BasicRequest implements Request {
 
     protected _status: Status = 'waiting'
     protected _progress: number = 0
+    protected _uploadProgress: number = 0
 
     protected _progressListeners: ProgressListener[] = []
     protected _statusListeners: StatusListener[] = []
@@ -70,6 +71,10 @@ export class BasicRequest implements Request {
 
     get progress () {
         return this._progress
+    }
+
+    get uploadProgress () {
+        return this._uploadProgress
     }
 
     addHeader (key: string, value: string): this {
@@ -198,6 +203,13 @@ export class BasicRequest implements Request {
                         this.changeProgression(Math.ceil(100 * event.loaded / event.total))
                     }
                 }
+                if (this._xhr.upload) {
+                    this._xhr.upload.onprogress = (event: ProgressEvent) => {
+                        if (event.lengthComputable) {
+                            this.changeUploadProgression(Math.ceil(100 * event.loaded / event.total))
+                        }
+                    }
+                }
             } catch (error) {
                 // Do nothing
             }
@@ -248,7 +260,19 @@ export class BasicRequest implements Request {
         this._progress = progress
 
         for (let listener of this._progressListeners) {
-            listener(progress)
+            listener(progress, 'down')
+        }
+    }
+
+    protected changeUploadProgression (progress: number) {
+        if (progress === this._uploadProgress) {
+            return
+        }
+
+        this._uploadProgress = progress
+
+        for (let listener of this._progressListeners) {
+            listener(progress, 'up')
         }
     }
 

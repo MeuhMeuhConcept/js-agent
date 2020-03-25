@@ -4,7 +4,7 @@ export type Status = 'waiting' | 'pending' | 'done' | 'error' | 'canceled'
 
 export type Method = 'GET' | 'POST' | 'PUT' | 'DELETE'
 
-export type ProgressListener = (progress: number) => void
+export type ProgressListener = (progress: number, direction: 'up' | 'down') => void
 
 export type StatusListener = (status: Status) => void
 

@@ -7,6 +7,7 @@ export class BasicRequest {
         this._responseData = null;
         this._status = 'waiting';
         this._progress = 0;
+        this._uploadProgress = 0;
         this._progressListeners = [];
         this._statusListeners = [];
         this._authorizationService = null;
@@ -44,6 +45,9 @@ export class BasicRequest {
     }
     get progress() {
         return this._progress;
+    }
+    get uploadProgress() {
+        return this._uploadProgress;
     }
     addHeader(key, value) {
         this._settings.headers[key] = value;
@@ -141,6 +145,13 @@ export class BasicRequest {
                         this.changeProgression(Math.ceil(100 * event.loaded / event.total));
                     }
                 };
+                if (this._xhr.upload) {
+                    this._xhr.upload.onprogress = (event) => {
+                        if (event.lengthComputable) {
+                            this.changeUploadProgression(Math.ceil(100 * event.loaded / event.total));
+                        }
+                    };
+                }
             }
             catch (error) {
                 // Do nothing
@@ -180,7 +191,16 @@ export class BasicRequest {
         }
         this._progress = progress;
         for (let listener of this._progressListeners) {
-            listener(progress);
+            listener(progress, 'down');
+        }
+    }
+    changeUploadProgression(progress) {
+        if (progress === this._uploadProgress) {
+            return;
+        }
+        this._uploadProgress = progress;
+        for (let listener of this._progressListeners) {
+            listener(progress, 'up');
         }
     }
     changeStatus(status) {
