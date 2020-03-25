@@ -83,6 +83,7 @@ export class BasicRequest {
         this._settings.data = data;
         this.abort();
         this.changeProgression(0);
+        this.changeUploadProgression(0);
         this.changeStatus('pending');
         return new Promise((resolve, reject) => {
             this._xhr = new XMLHttpRequest();
@@ -94,6 +95,7 @@ export class BasicRequest {
                 this._responseTextStatus = this._xhr.statusText;
                 this._responseData = this._xhr.responseText;
                 this.changeProgression(100);
+                this.changeUploadProgression(100);
                 if (this._xhr.status === 204) {
                     this._responseData = null;
                     this.changeStatus('done');
@@ -123,6 +125,7 @@ export class BasicRequest {
                 this._responseTextStatus = this._xhr.statusText;
                 this._responseData = this._xhr.responseText;
                 this.changeProgression(100);
+                this.changeUploadProgression(100);
                 this.changeStatus('error');
                 this._xhr = null;
                 if (this._responseStatus === 401 && this._authorizationService) {
@@ -135,6 +138,7 @@ export class BasicRequest {
                     return;
                 }
                 this.changeProgression(100);
+                this.changeUploadProgression(100);
                 this.changeStatus('canceled');
                 this._xhr = null;
                 reject(this.buildResponse());

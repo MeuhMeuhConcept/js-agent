@@ -126,6 +126,7 @@ export class BasicRequest implements Request {
         this.abort()
 
         this.changeProgression(0)
+        this.changeUploadProgression(0)
         this.changeStatus('pending')
 
         return new Promise((resolve, reject) => {
@@ -140,6 +141,7 @@ export class BasicRequest implements Request {
                 this._responseData = this._xhr.responseText
 
                 this.changeProgression(100)
+                this.changeUploadProgression(100)
 
                 if (this._xhr.status === 204) {
                     this._responseData = null
@@ -173,6 +175,7 @@ export class BasicRequest implements Request {
                 this._responseData = this._xhr.responseText
 
                 this.changeProgression(100)
+                this.changeUploadProgression(100)
                 this.changeStatus('error')
 
                 this._xhr = null
@@ -190,6 +193,7 @@ export class BasicRequest implements Request {
                 }
 
                 this.changeProgression(100)
+                this.changeUploadProgression(100)
                 this.changeStatus('canceled')
 
                 this._xhr = null
