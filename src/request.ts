@@ -12,6 +12,7 @@ export interface RequestInformations {
     readonly status: Status
     readonly errors: string[]
     readonly progress: number
+    readonly uploadProgress: number
 }
 
 export interface AuthorizationService {
