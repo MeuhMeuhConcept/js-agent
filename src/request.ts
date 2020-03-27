@@ -25,6 +25,7 @@ export interface Request extends RequestInformations {
     readonly responseData: any | null
     readonly responseStatus: any | null
     readonly responseTextStatus: any | null
+    reset (): this
     abort (): this
     send (data?: any): Promise<Response>
     onProgress (listener: ProgressListener): this

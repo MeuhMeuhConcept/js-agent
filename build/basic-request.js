@@ -73,6 +73,12 @@ export class BasicRequest {
         this._statusListeners.push(listener);
         return this;
     }
+    reset() {
+        if (this._status !== 'pending') {
+            this._status = 'waiting';
+        }
+        return this;
+    }
     abort() {
         if (this._xhr) {
             this._xhr.abort();
