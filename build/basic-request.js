@@ -75,7 +75,7 @@ export class BasicRequest {
     }
     reset() {
         if (this._status !== 'pending') {
-            this._status = 'waiting';
+            this.changeStatus('waiting');
         }
         return this;
     }

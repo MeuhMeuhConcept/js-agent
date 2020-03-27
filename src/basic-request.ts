@@ -114,7 +114,7 @@ export class BasicRequest implements Request {
 
     reset () {
         if (this._status !== 'pending') {
-            this._status = 'waiting'
+            this.changeStatus('waiting')
         }
 
         return this
