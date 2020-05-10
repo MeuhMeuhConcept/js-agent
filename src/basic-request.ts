@@ -192,6 +192,8 @@ export class BasicRequest implements Request {
                     this._authorizationService.onAuthorizationError(this._responseStatus, this._responseTextStatus)
                 }
 
+                this.transformErrorResponseData(this._responseData)
+
                 reject(this.buildResponse())
             }
 
@@ -254,6 +256,10 @@ export class BasicRequest implements Request {
 
     protected transformResponseData (data: string): boolean {
         return true
+    }
+
+    protected transformErrorResponseData (data: string): boolean {
+        return this.transformResponseData(data)
     }
 
     protected buildResponse (): Response {

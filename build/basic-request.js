@@ -137,6 +137,7 @@ export class BasicRequest {
                 if (this._responseStatus === 401 && this._authorizationService) {
                     this._authorizationService.onAuthorizationError(this._responseStatus, this._responseTextStatus);
                 }
+                this.transformErrorResponseData(this._responseData);
                 reject(this.buildResponse());
             };
             this._xhr.onabort = () => {
@@ -187,6 +188,9 @@ export class BasicRequest {
     }
     transformResponseData(data) {
         return true;
+    }
+    transformErrorResponseData(data) {
+        return this.transformResponseData(data);
     }
     buildResponse() {
         return {
