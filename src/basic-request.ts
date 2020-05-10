@@ -157,6 +157,9 @@ export class BasicRequest implements Request {
                 } else if (this._xhr.status === 200 && this.transformResponseData(this._responseData)) {
                     this.changeStatus('done')
                 } else {
+                    if (this._xhr.status !== 200) {
+                        this.transformErrorResponseData(this._responseData)
+                    }
                     this.changeStatus('error')
                 }
 

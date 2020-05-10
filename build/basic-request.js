@@ -110,6 +110,9 @@ export class BasicRequest {
                     this.changeStatus('done');
                 }
                 else {
+                    if (this._xhr.status !== 200) {
+                        this.transformErrorResponseData(this._responseData);
+                    }
                     this.changeStatus('error');
                 }
                 this._xhr = null;
