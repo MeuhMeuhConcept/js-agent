@@ -9,7 +9,7 @@ export interface Settings {
     };
 }
 export declare class BasicRequest implements Request {
-    private _xhr;
+    private _request;
     protected _settings: Settings;
     protected _urlParams: {
         [key: string]: string;
@@ -41,7 +41,7 @@ export declare class BasicRequest implements Request {
     abort(): this;
     send(data?: any): Promise<Response>;
     protected transformRequestData(data?: any): any;
-    protected transformResponseData(data: string): boolean;
+    protected transformResponseData(data: any): boolean;
     protected transformErrorResponseData(data: string): boolean;
     protected buildResponse(): Response;
     protected changeProgression(progress: number): void;

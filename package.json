@@ -1,6 +1,6 @@
 {
   "name": "rich-agent",
-  "version": "1.4.4",
+  "version": "2.0.0",
   "main": "build/index.js",
   "typings": "build/index",
   "repository": "git@github.com:MeuhMeuhConcept/js-agent.git",
@@ -15,6 +15,7 @@
   },
   "devDependencies": {
     "@types/jest": "^25.1.4",
+    "@types/superagent": "^4.1.10",
     "concurrently": "^5.1.0",
     "jest": "^25.1.0",
     "ts-jest": "^25.2.1",
@@ -25,5 +26,8 @@
   },
   "resolutions": {
     "lodash": "^4.17.19"
+  },
+  "dependencies": {
+    "superagent": "^6.1.0"
   }
 }

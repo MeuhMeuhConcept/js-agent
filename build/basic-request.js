@@ -1,6 +1,8 @@
+import { Agent } from './agent';
+import * as superagent from 'superagent';
 export class BasicRequest {
     constructor(url, method = 'GET') {
-        this._xhr = null;
+        this._request = null;
         this._urlParams = {};
         this._responseStatus = null;
         this._responseTextStatus = '';
@@ -80,8 +82,8 @@ export class BasicRequest {
         return this;
     }
     abort() {
-        if (this._xhr) {
-            this._xhr.abort();
+        if (this._request) {
+            this._request.abort();
         }
         return this;
     }
@@ -92,30 +94,35 @@ export class BasicRequest {
         this.changeUploadProgression(0);
         this.changeStatus('pending');
         return new Promise((resolve, reject) => {
-            this._xhr = new XMLHttpRequest();
-            this._xhr.onload = () => {
-                if (!this._xhr) {
-                    return;
-                }
-                this._responseStatus = this._xhr.status;
-                this._responseTextStatus = this._xhr.statusText;
-                this._responseData = this._xhr.responseText;
+            let url = this._settings.url;
+            for (const key in this._urlParams) {
+                url = url.replace('{' + key + '}', this._urlParams[key]);
+            }
+            this._request = superagent.default(this._settings.method || 'GET', url);
+            if (!this._request) {
+                reject();
+                return;
+            }
+            this._request.on('response', (response) => {
+                this._responseStatus = response.status;
+                this._responseTextStatus = response.text;
+                this._responseData = response.body;
                 this.changeProgression(100);
                 this.changeUploadProgression(100);
-                if (this._xhr.status === 204) {
+                if (response.status === 204) {
                     this._responseData = null;
                     this.changeStatus('done');
                 }
-                else if (this._xhr.status === 200 && this.transformResponseData(this._responseData)) {
+                else if (response.status === 200 && this.transformResponseData(this._responseData)) {
                     this.changeStatus('done');
                 }
                 else {
-                    if (this._xhr.status !== 200) {
+                    if (response.status !== 200) {
                         this.transformErrorResponseData(this._responseData);
                     }
                     this.changeStatus('error');
                 }
-                this._xhr = null;
+                this._request = null;
                 if (this._status === 'done') {
                     resolve(this.buildResponse());
                 }
@@ -125,65 +132,47 @@ export class BasicRequest {
                     }
                     reject(this.buildResponse());
                 }
-            };
-            this._xhr.onerror = () => {
-                if (!this._xhr) {
-                    return;
-                }
-                this._responseStatus = this._xhr.status;
-                this._responseTextStatus = this._xhr.statusText;
-                this._responseData = this._xhr.responseText;
-                this.changeProgression(100);
-                this.changeUploadProgression(100);
-                this.changeStatus('error');
-                this._xhr = null;
-                if (this._responseStatus === 401 && this._authorizationService) {
-                    this._authorizationService.onAuthorizationError(this._responseStatus, this._responseTextStatus);
-                }
-                this.transformErrorResponseData(this._responseData);
-                reject(this.buildResponse());
-            };
-            this._xhr.onabort = () => {
-                if (!this._xhr) {
+            });
+            this._request.on('abort', () => {
+                if (!this._request) {
                     return;
                 }
                 this.changeProgression(100);
                 this.changeUploadProgression(100);
                 this.changeStatus('canceled');
-                this._xhr = null;
+                this._request = null;
                 reject(this.buildResponse());
-            };
-            try {
-                this._xhr.onprogress = (event) => {
-                    if (event.lengthComputable) {
-                        this.changeProgression(Math.ceil(100 * event.loaded / event.total));
-                    }
-                };
-                if (this._xhr.upload) {
-                    this._xhr.upload.onprogress = (event) => {
-                        if (event.lengthComputable) {
-                            this.changeUploadProgression(Math.ceil(100 * event.loaded / event.total));
-                        }
-                    };
+            });
+            this._request.on('progress', (event) => {
+                if (event.direction === 'download' && event.total) {
+                    this.changeProgression(Math.ceil(100 * event.loaded / event.total));
                 }
-            }
-            catch (error) {
-                // Do nothing
-            }
-            let url = this._settings.url;
-            for (const key in this._urlParams) {
-                url = url.replace('{' + key + '}', this._urlParams[key]);
-            }
-            this._xhr.open(this._settings.method || 'GET', url, true);
+                if (event.direction === 'upload' && event.total) {
+                    this.changeUploadProgression(Math.ceil(100 * event.loaded / event.total));
+                }
+            });
             if (this._authorizationService) {
                 this.addAuthorization(this._authorizationService.authorizationToken, this._authorizationService.authorizationPrefix);
             }
             if (this._settings.headers) {
-                for (let key in this._settings.headers) {
-                    this._xhr.setRequestHeader(key, this._settings.headers[key]);
-                }
+                this._request.set(this._settings.headers);
             }
-            this._xhr.send(this.transformRequestData(this._settings.data));
+            this._request.send(this.transformRequestData(this._settings.data));
+            this._request.retry(2);
+            Agent.watchPromise(new Promise((resolve, reject) => {
+                if (!this._request) {
+                    reject();
+                    return;
+                }
+                this._request.end((err, res) => {
+                    if (err) {
+                        reject();
+                    }
+                    else {
+                        resolve();
+                    }
+                });
+            }));
         });
     }
     transformRequestData(data) {
@@ -207,7 +196,7 @@ export class BasicRequest {
             return;
         }
         this._progress = progress;
-        for (let listener of this._progressListeners) {
+        for (const listener of this._progressListeners) {
             listener(progress, 'down');
         }
     }
@@ -216,7 +205,7 @@ export class BasicRequest {
             return;
         }
         this._uploadProgress = progress;
-        for (let listener of this._progressListeners) {
+        for (const listener of this._progressListeners) {
             listener(progress, 'up');
         }
     }
@@ -225,7 +214,7 @@ export class BasicRequest {
             return;
         }
         this._status = status;
-        for (let listener of this._statusListeners) {
+        for (const listener of this._statusListeners) {
             listener(status);
         }
     }
