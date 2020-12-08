@@ -1,2 +1,2 @@
 # rich-agent
-Rich agent via XMLHttpRequest
+Rich agent via superagent
