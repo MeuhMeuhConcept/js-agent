@@ -22,5 +22,8 @@
     "tslint-config-standard": "^9.0.0",
     "typescript": "^3.8.3",
     "watch": "^1.0.2"
+  },
+  "resolutions": {
+    "lodash": "^4.17.19"
   }
 }
