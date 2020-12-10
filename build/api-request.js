@@ -1,5 +1,7 @@
-import { BasicRequest } from './basic-request';
-export class ApiRequest extends BasicRequest {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const basic_request_1 = require("./basic-request");
+class ApiRequest extends basic_request_1.BasicRequest {
     constructor(url, method = 'GET') {
         super(url, method);
         this.addHeader('Content-Type', 'application/json');
@@ -22,3 +24,4 @@ export class ApiRequest extends BasicRequest {
         return true;
     }
 }
+exports.ApiRequest = ApiRequest;

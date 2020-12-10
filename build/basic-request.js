@@ -1,6 +1,15 @@
-import { Agent } from './agent';
-import * as superagent from 'superagent';
-export class BasicRequest {
+"use strict";
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const agent_1 = require("./agent");
+const superagent = __importStar(require("superagent"));
+class BasicRequest {
     constructor(url, method = 'GET') {
         this._request = null;
         this._urlParams = {};
@@ -159,7 +168,7 @@ export class BasicRequest {
             }
             this._request.send(this.transformRequestData(this._settings.data));
             this._request.retry(2);
-            Agent.watchPromise(new Promise((resolve, reject) => {
+            agent_1.Agent.watchPromise(new Promise((resolve, reject) => {
                 if (!this._request) {
                     reject();
                     return;
@@ -219,3 +228,4 @@ export class BasicRequest {
         }
     }
 }
+exports.BasicRequest = BasicRequest;

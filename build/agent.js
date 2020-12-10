@@ -1,4 +1,6 @@
-export class RequestAgent {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+class RequestAgent {
     constructor() {
         this._promises = [];
     }
@@ -30,4 +32,5 @@ export class RequestAgent {
         });
     }
 }
-export const Agent = new RequestAgent();
+exports.RequestAgent = RequestAgent;
+exports.Agent = new RequestAgent();
