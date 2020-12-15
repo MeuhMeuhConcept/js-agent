@@ -39,11 +39,11 @@ export class RequestAgent {
         })
     }
 
-    public get contentStrategry(): ContentStrategy {
+    public get contentStrategry (): ContentStrategy {
         return this._contentStrategry
     }
 
-    public set contentStrategry(v: ContentStrategy) {
+    public set contentStrategry (v: ContentStrategy) {
         this._contentStrategry = v
     }
 }
