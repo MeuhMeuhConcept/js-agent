@@ -4,6 +4,8 @@ import { Response } from './response'
 export class RequestAgent {
     protected _promises: Promise<boolean>[] = []
 
+    protected _contentStrategry: ContentStrategy = 'wait'
+
     public watchPromise (promise: Promise<any>): this {
         const p =
             promise.then(() => {
@@ -36,6 +38,16 @@ export class RequestAgent {
             })
         })
     }
+
+    public get contentStrategry(): ContentStrategy {
+        return this._contentStrategry
+    }
+
+    public set contentStrategry(v: ContentStrategy) {
+        this._contentStrategry = v
+    }
 }
 
 export const Agent = new RequestAgent()
+
+export type ContentStrategy = 'wait' | 'show'
