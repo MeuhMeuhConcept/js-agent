@@ -1,6 +1,6 @@
 {
   "name": "rich-agent",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "main": "build/index.js",
   "typings": "build/index",
   "repository": "git@github.com:MeuhMeuhConcept/js-agent.git",
@@ -26,6 +26,7 @@
   },
   "resolutions": {
     "lodash": "^4.17.19",
+    "node-notifier": "^8.0.1",
     "yargs-parser": "^18.1.2"
   },
   "dependencies": {
