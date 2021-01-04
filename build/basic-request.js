@@ -118,15 +118,15 @@ class BasicRequest {
                 this._responseData = response.body;
                 this.changeProgression(100);
                 this.changeUploadProgression(100);
-                if (response.status === 201 || response.status === 204) {
+                if (response.status === 204) {
                     this._responseData = null;
                     this.changeStatus('done');
                 }
-                else if (response.status === 200 && this.transformResponseData(this._responseData)) {
+                else if ((response.status === 200 || response.status === 201) && this.transformResponseData(this._responseData)) {
                     this.changeStatus('done');
                 }
                 else {
-                    if (response.status !== 200) {
+                    if (response.status !== 200 && response.status !== 201) {
                         this.transformErrorResponseData(this._responseData);
                     }
                     this.changeStatus('error');
